@@ -1,0 +1,329 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-4.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" th:href="@{/layui/css/layui.css?t=1525771196163}"  media="all">
+    <script th:src="@{/jquery/jquery.min.js}" charset="utf-8"></script>
+    <script th:src="@{/layer/layer.js}" charset="utf-8"></script>
+    <script th:src="@{/layui/layui.js?t=1525771196163}" charset="utf-8"></script>
+
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+    <script th:src="@{/html5shiv/html5.min.js}"></script>
+    <script th:src="@{/respond.js/respond.min.js}"></script>
+    <![endif]-->
+    <script>
+
+
+        layui.use(['form', 'layedit', 'laydate','element'], function(){
+            var form = layui.form
+                ,layer = layui.layer
+                ,$ = layui.jquery
+                ,element = layui.element;
+            //监听提交
+            //form.on('submit(demo1)', function(data){
+            //    layer.alert(JSON.stringify(data.field), {
+            //        title: '最终的提交信息'
+            //    })
+            //    return false;
+            //});
+            form.on('select(tablename)', function(data){
+                netmarch.selchange();
+            })
+            form.on('select(pages)', function(data){
+                netmarch.lodtxt();
+            })
+            form.on('checkbox(tablenameAll)', function(data){
+                //console.log(data.elem); //得到checkbox原始DOM对象
+                //console.log(data.elem.checked); //是否被选中，true或者false
+                //console.log(data.value); //复选框value值，也可以通过data.elem.value得到
+                //console.log(data.othis); //得到美化后的DOM对象
+                netmarch.selectAll(data);
+            });
+
+
+
+        });
+
+        var netmarch = {
+            lodtxt:function(){
+                var one = $("#pages").val();
+                var two = $("#pname").val();
+                var str = $("#mk").val();
+                $("#compages").val(one+"."+two+"."+str)
+                //netmarch.renderForm('input');
+            },
+            submit:function(){
+                var tablename = $("#tablename").val();
+                if(tablename == ""){
+                    return;
+                }
+                var index = layer.load(1, {
+                    shade: [0.5,'#fff'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    type: 'get',
+                    data: $('#form').serialize(),
+                    url: '/admin/exprot',
+                    cache:false,
+                    dataType:'json',
+                    success: function (data) {
+                        layer.close(index);
+                        if(data.code =="ERROR"){
+                            layer.alert(data.msg);
+                        }else{
+                            layer.alert(data.msg);
+                            var url = getRealPath() + "/downloadZip?key="+data.key;
+                            $("#xzwjhtml").html("<a href='"+url+"' target='_blank' >"+data.key+".zip 点我下载文件</a>");
+                        }
+
+                    }
+                })
+            },
+            renderForm:function(val){
+                layui.use('form', function(){
+                    var form = layui.form;//高版本建议把括号去掉，有的低版本，需要加()
+                    form.render(val);
+                });
+            },
+            loginDB : function(){
+                var index = layer.load(1, {
+                    shade: [0.5,'#fff'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    type: 'get',
+                    data: $('#form').serialize(),
+                    url: '/admin/loginDB',
+                    cache:false,
+                    dataType:'json',
+                    success: function (data) {
+                        layer.close(index);
+                        if(data.code =="ERROR"){
+                                layer.alert(data.msg);
+                        }else{
+                            layer.alert(data.msg+"请选择表名！");
+                            $("#tablename").empty();
+                            $("#tablename").append("<option value=\"\">直接选择或搜索选择</option>");
+                            $.each(data.listData,function(index,obj){
+                                $("#tablename").append("<option value='"+obj.tablename+"'>"+obj.tablename+"</option>");
+                            });
+                            netmarch.renderForm('select');
+                        }
+
+                    }
+                })
+            },
+            selectAll:function(obj){
+                $("input[name=zdname]").prop("checked",obj.elem.checked);
+                netmarch.renderForm('checkbox');
+            },
+            selchange:function(){
+                var index = layer.load(1, {
+                    shade: [0.5,'#fff'] //0.1透明度的白色背景
+                });
+                $.ajax({
+                    type: 'get',
+                    data: $('#form').serialize(),
+                    url: '/admin/loginDBBytable',
+                    cache:false,
+                    dataType:'json',
+                    success: function (data) {
+                        layer.close(index);
+                        if(data.code =="ERROR"){
+                            layer.alert(data.msg);
+                        }else{
+                            var html = "";
+                            $.each(data.listData,function(index,obj){
+                                var value = obj.name +"--" + obj.type;
+                                html += "<tr>\n" +
+                                    "                            <td>"+"<input type=\"checkbox\" name=\"zdname\"  value='"+value+"' lay-skin=\"primary\"  checked=\"\"></td>"+"\n" +
+                                    "                            <td>"+obj.name +"</td>\n" +
+                                    "                            <td>"+obj.qtype+"</td>\n" +
+                                    "                            <td>"+obj.isnull+"</td>\n" +
+                                    "                            <td>"+obj.bz+"</td>\n" +
+                                    "\n" +
+                                    "                        </tr>";
+                            });
+                            $("#checkedhtml").html(html);
+                            netmarch.renderForm('checkbox');
+                        }
+
+                    }
+                })
+            }
+        };
+        function getRealPath(){
+
+            var localObj = window.location;
+            var contextPath = localObj.pathname.split("/")[1];
+            var basePath = localObj.protocol + "//" + localObj.host + "/"+ contextPath;
+
+            return basePath ;
+
+        }
+
+    </script>
+</head>
+<body>
+<div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief">
+    <ul class="layui-tab-title">
+        <li class="layui-this">代码生成</li>
+    </ul>
+    <div class="layui-tab-content">
+        <div class="layui-tab-item layui-show">
+            <form class="layui-form" id="form" th:action="@{/admin/exprot}">
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">包名</label>
+                        <div class="layui-input-inline">
+                            <select id="pages" lay-verify="required" lay-filter="pages"  lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                                <option value="com.netmarch">com.netmarch</option>
+                                <option value="com.netintech">com.netintech</option>
+                                <option value="com.smartquerier">com.smartquerier</option>
+
+                            </select>
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">项目名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" onkeyup="netmarch.lodtxt()" id="pname" lay-verify="required" autocomplete="off" placeholder="文件名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">模块名称</label>
+                        <div class="layui-input-inline">
+                            <input type="text" id="mk" name="mk"  onkeyup="netmarch.lodtxt()" lay-verify="required" autocomplete="off" placeholder="文件名" class="layui-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <label class="layui-form-label">文件引用名</label>
+                    <div class="layui-input-block">
+                        <input type="text" id="compages" name="compages" autocomplete="off" placeholder="请输入标题" class="layui-input">
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                <div class="layui-inline">
+                    <label class="layui-form-label">DB-TYPE</label>
+                    <div class="layui-input-inline">
+                        <select name="dbtype" lay-verify="required" lay-search="">
+                            <option value="">直接选择或搜索选择</option>
+                            <option value="MYSQL">MYSQL</option>
+                            <option value="ORACLE">ORACLE</option>
+                        </select>
+
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">DB-IP</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="dbip" lay-verify="required" autocomplete="off" value="172.16.0.177" placeholder="数据库IP地址" class="layui-input">
+                    </div>
+                </div>
+                <div class="layui-inline">
+                    <label class="layui-form-label">DB-PORT</label>
+                    <div class="layui-input-inline">
+                        <input type="text" name="dbport" lay-verify="required" autocomplete="off" value="3306" placeholder="数据库端口号" class="layui-input">
+                    </div>
+                </div>
+
+            </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">DB-NAME</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="dbname" lay-verify="required" autocomplete="off" value="dwxx" placeholder="数据库名" class="layui-input">
+                        </div>
+                    </div>
+
+                    <div class="layui-inline">
+                        <label class="layui-form-label">DB用户名</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="dbusername" lay-verify="required" autocomplete="off" value="root" placeholder="数据库用户名" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <label class="layui-form-label">DB-密码</label>
+                        <div class="layui-input-inline">
+                            <input type="text" name="dbpassword" lay-verify="required" autocomplete="off" value="netmarch" placeholder="数据库密码" class="layui-input">
+                        </div>
+                    </div>
+                    <div class="layui-inline">
+                        <div class="layui-input-block">
+                            <button type="button" class="layui-btn" onclick="netmarch.loginDB()" >读取数据库表信息</button>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-inline">
+                        <label class="layui-form-label">表名</label>
+                        <div class="layui-input-inline">
+                            <select name="tablename" id="tablename"  lay-verify="required" lay-filter="tablename" lay-search="">
+                                <option value="">直接选择或搜索选择</option>
+                            </select>
+                        </div>
+                        <div class="layui-form-mid layui-word-aux"><b>➀读取数据库表信息⇒⇒➁选择表名</b></div>
+                    </div>
+
+                </div>
+
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <button type="button" class="layui-btn" lay-submit="" onclick="netmarch.submit()">提交生成代码</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+
+                    </div>
+                </div>
+                <div class="layui-form-item">
+                    <div class="layui-input-block">
+                        <span id="xzwjhtml">
+
+                        </span>
+                    </div>
+                </div>
+
+                <div class="layui-form-item">
+                    <table class="layui-table">
+                        <colgroup>
+                            <col width="50">
+                            <col width="200">
+                            <col>
+                        </colgroup>
+                        <thead>
+                        <tr>
+                            <th><input type="checkbox" name="tablenameAll" lay-filter="tablenameAll" lay-skin="primary" title="" checked=""></th>
+                            <th>数据库字段</th>
+                            <th>字段类型</th>
+                            <th>是否为空</th>
+                            <th>字段备注</th>
+                        </tr>
+                        </thead>
+                        <tbody id="checkedhtml">
+                        </tbody>
+                    </table>
+                </div>
+
+
+                <!--<div class="layui-form-item layui-form-text">
+                  <label class="layui-form-label">编辑器</label>
+                  <div class="layui-input-block">
+                    <textarea class="layui-textarea layui-hide" name="content" lay-verify="content" id="LAY_demo_editor"></textarea>
+                  </div>
+                </div>-->
+
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

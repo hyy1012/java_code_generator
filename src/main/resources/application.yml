@@ -1,0 +1,48 @@
+server:
+  port: 9008
+context-path: /BootInterceptor
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/automation
+    username: root
+    password: 1234
+    driverClassName: com.mysql.jdbc.Driver
+  jpa:
+    database: mysql
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        physical-strategy: org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+  jackson:
+    serialization.indent_output: true
+  messages:
+    basename: i18n/messages
+  mvc:
+    favicon:
+      enabled: false
+  thymeleaf:
+    mode: XHTML
+    prefix: classpath:/templates/
+
+logging:
+  pattern:
+    console: "%d - %msg%n"
+  file: C:\amationlogs\amation
+  level:
+    xaru:
+      zsl: debug
+    org:
+      springfromwork:
+        web: info
+      hibernate: error
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+#自定义配置文件
+file:
+  url: E:\\files
+
+
