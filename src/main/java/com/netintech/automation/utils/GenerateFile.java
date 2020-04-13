@@ -22,7 +22,7 @@ public class GenerateFile {
      */
     public static Map<String,String> initDir(String URL,String key, String mk,String name) throws IOException {
         Map<String,String> map = new HashMap<>();
-        String one =URL+ "/zip" + key + "/version.txt" ;
+        String one =URL+ "\\zip" + key + "\\version.txt" ;
         String bean =URL+ "\\" + key + "\\" + mk + "\\bean\\"+name+".java" ;
         String mapper = URL+ "\\" + key + "\\" + mk + "\\mapper\\"+name+"Mapper.java" ;
         String mapperxml = URL+ "\\" + key + "\\" + mk + "\\mapper\\"+name+"Mapper.xml" ;
@@ -46,7 +46,7 @@ public class GenerateFile {
         File file = new File(url);
         File fileParent = file.getParentFile();
         if(!fileParent.exists()){
-            fileParent.mkdirs();
+            fileParent.mkdir();
         }
         file.createNewFile();
 

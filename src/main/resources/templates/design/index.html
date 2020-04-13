@@ -37,8 +37,6 @@
                 netmarch.selectAll(data);
             });
 
-
-
         });
 
         var netmarch = {
@@ -141,7 +139,7 @@
                     <label class="layui-form-label">DB-TYPE</label>
                     <div class="layui-input-inline">
                         <select name="dbtype" id="dbtype" lay-verify="required" lay-search="">
-                            <option value="">直接选择或搜索选择</option>
+<!--                            <option value="">直接选择或搜索选择</option>-->
                             <option value="MYSQL">MYSQL</option>
                             <option value="ORACLE">ORACLE</option>
                         </select>
@@ -151,7 +149,7 @@
                 <div class="layui-inline">
                     <label class="layui-form-label">DB-IP</label>
                     <div class="layui-input-inline">
-                        <input type="text" name="dbip" lay-verify="required" autocomplete="off" value="172.16.0.177" placeholder="数据库IP地址" class="layui-input">
+                        <input type="text" name="dbip" lay-verify="required" autocomplete="off" value="127.0.0.1" placeholder="数据库IP地址" class="layui-input">
                     </div>
                 </div>
                 <div class="layui-inline">
@@ -167,7 +165,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">DB-NAME</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="dbname" lay-verify="required" autocomplete="off" value="dwxx" placeholder="数据库名" class="layui-input">
+                            <input type="text" name="dbname" lay-verify="required" autocomplete="off" value="test" placeholder="数据库名" class="layui-input">
                         </div>
                     </div>
 
@@ -180,7 +178,7 @@
                     <div class="layui-inline">
                         <label class="layui-form-label">DB-密码</label>
                         <div class="layui-input-inline">
-                            <input type="text" name="dbpassword" lay-verify="required" autocomplete="off" value="netmarch" placeholder="数据库密码" class="layui-input">
+                            <input type="text" name="dbpassword" lay-verify="required" autocomplete="off" value="123" placeholder="数据库密码" class="layui-input">
                         </div>
                     </div>
                     <div class="layui-inline">
