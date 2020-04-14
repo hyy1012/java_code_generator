@@ -6,6 +6,9 @@ https://gitee.com/xuanwo/java_code_generator
 #### 项目问题及修改
 1.由于我安装的是mysql8，数据库驱动要修改一下（com.mysql.cj.jdbc.Driver————jdbc:...?serverTimezone=Asia/Shanghai&useSSL=false）  
 2.查表的SQL语句中table_type='base table'要改为table_type='BASE TABLE'
+3.文件夹名有冒号，要把冒号replaceAll
+4.数据库逐渐要设置为自增
+5.都是坑
 
 #### 项目介绍
 1.本项目采用SPringBoot+JPA+Mybaties架构

@@ -47,7 +47,7 @@ public class GenerateFile {
         File file = new File(url);
         File fileParent = file.getParentFile();
         if (!fileParent.exists()) {
-            fileParent.mkdir();
+            fileParent.mkdirs();
         }
         file.createNewFile();
     }

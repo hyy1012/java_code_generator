@@ -106,6 +106,7 @@ public class IndexController {
         r.setCode("SUCCESS");
         String key = CheckedSession.check(request);
         Map<String, String> map = new HashMap<>();
+        key = key.replaceAll(":","");
         try {
             map = GenerateFile.initDir(url, key, model.getMk(), GenerateJava.captureName(model.getTablename()));
         } catch (IOException e) {
