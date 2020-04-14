@@ -43,6 +43,6 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
 #自定义配置文件
 file:
-  url: E:\\files
+  url: E:\files
 
 
